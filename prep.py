@@ -76,9 +76,9 @@ plt.show();
 
 # MFCCs
 # n_mfcc -> num coefficients to be extracted
-MFCCs = librosa.feature.mfcc(signal, n_fft=n_fft, hop_length=hop_length, n_mfcc=13)
+MFCCs = librosa.feature.mfcc(y=signal, n_fft=n_fft, hop_length=hop_length, n_mfcc=13)
 librosa.display.specshow(MFCCs, sr=sr, hop_length=hop_length)
 plt.xlabel("Time")
 plt.ylabel("MFCCs")
-#plt.colorbar()
+# plt.colorbar()
 plt.show();
