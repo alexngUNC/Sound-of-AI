@@ -3,7 +3,7 @@ import numpy as np
 import json
 import tensorflow.keras as keras
 
-DATASET_PATH = "data_10.json"
+DATASET_PATH = "data.json"
 
 def load_data(dataset_path):
   with open(dataset_path, "r") as fp:
@@ -12,6 +12,7 @@ def load_data(dataset_path):
   # convert lists into numpy arrays
   inputs = np.array(data["mfcc"])
   labels = np.array(data["labels"])
+  return inputs, labels
 
 if __name__ == "__main__":
   # load data
