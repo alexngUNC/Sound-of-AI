@@ -3,7 +3,7 @@ import librosa
 import json
 import math
 
-DATASET_PATH = "genre_dataset_reduced"
+DATASET_PATH = "Data/genres_original"
 JSON_PATH = "data.json"
 SAMPLE_RATE = 22050
 DURATION = 30 # measured in seconds
@@ -12,7 +12,7 @@ SAMPLES_PER_TRACK = SAMPLE_RATE * DURATION
 def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, num_segments=5):
   # dict to store data
   data = {
-    "mapping": ["classical", "blues"], # classical: 0, blues: 1
+    "mapping": [], # classical: 0, blues: 1
     "mfcc": [], # training inputs
     "labels": [] # targets
   }
@@ -28,7 +28,7 @@ def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, nu
       dirpath_components = dirpath.split("/") # genre/blues -> [genre, blues]
       semantic_label = dirpath_components[-1]
       data["mapping"].append(semantic_label)
-      print(f"\nProcessoring {semantic_label}")
+      print(f"\nProcessing {semantic_label}")
 
       # process files for a specific genre
       for f in filenames:
@@ -41,7 +41,7 @@ def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, nu
           start_sample = num_samples_per_segment * s
           finish_sample = start_sample + num_samples_per_segment
             
-          mfcc = librosa.feature.mfcc(signal[start_sample:finish_sample],
+          mfcc = librosa.feature.mfcc(y=signal[start_sample:finish_sample],
                                       sr=SAMPLE_RATE,
                                       n_fft=n_fft,
                                       n_mfcc=n_mfcc,
@@ -50,11 +50,12 @@ def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, nu
 
           # store mfcc for segment if it has the expected length
           if len(mfcc) == expected_num_mfcc_vectors_per_segment:
-            data["mfcc"].append(mfcc.toList())
+            data["mfcc"].append(mfcc.tolist())
             data["labels"].append(i-1) # first one was data set path, so need to subtract one
             print("{}, segment: {}".format(file_path, s))
+
   with open(json_path, "w") as fp:
-    json.dump(data, fp, index=4)
+    json.dump(data, fp, indent=4)
 
 if __name__ == "__main__":
   save_mfcc(DATASET_PATH, JSON_PATH, num_segments=10)
